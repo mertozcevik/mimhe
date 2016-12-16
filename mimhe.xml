@@ -193,18 +193,6 @@
   <property name="project.jdk.home" value="${jdk.home.ıntellij_ıdea_community_edition_ıc-163.9166.29}"/>
   <property name="project.jdk.bin" value="${jdk.bin.ıntellij_ıdea_community_edition_ıc-163.9166.29}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.ıntellij_ıdea_community_edition_ıc-163.9166.29"/>
-  <!-- Register Custom Compiler Taskdefs -->
-  <property name="javac2.home" value="${idea.home}/lib"/>
-  <path id="javac2.classpath">
-    <pathelement location="${javac2.home}/javac2.jar"/>
-    <pathelement location="${javac2.home}/jdom.jar"/>
-    <pathelement location="${javac2.home}/asm-all.jar"/>
-    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
-  </path>
-  <target name="register.custom.compilers">
-    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
-    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
-  </target>
   
   <!-- Modules -->
   
@@ -263,15 +251,15 @@
   
   <target name="compile.module.mımhe" depends="compile.module.mımhe.production,compile.module.mımhe.tests" description="Compile module MIMHE"/>
   
-  <target name="compile.module.mımhe.production" depends="register.custom.compilers" description="Compile module MIMHE; production classes">
+  <target name="compile.module.mımhe.production" description="Compile module MIMHE; production classes">
     <mkdir dir="${mımhe.output.dir}"/>
-    <javac2 destdir="${mımhe.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mımhe}/javac">
+    <javac destdir="${mımhe.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mımhe}/javac">
       <compilerarg line="${compiler.args.mımhe}"/>
       <bootclasspath refid="mımhe.module.bootclasspath"/>
       <classpath refid="mımhe.module.production.classpath"/>
       <src refid="mımhe.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.mımhe"/>
-    </javac2>
+    </javac>
     
     <copy todir="${mımhe.output.dir}">
       <fileset dir="${module.mımhe.basedir}">
@@ -281,7 +269,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.mımhe.tests" depends="register.custom.compilers,compile.module.mımhe.production" description="compile module MIMHE; test classes" unless="skip.tests"/>
+  <target name="compile.module.mımhe.tests" depends="compile.module.mımhe.production" description="compile module MIMHE; test classes" unless="skip.tests"/>
   
   <target name="clean.module.mımhe" description="cleanup module">
     <delete dir="${mımhe.output.dir}"/>
